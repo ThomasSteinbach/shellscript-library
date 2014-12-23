@@ -1,12 +1,7 @@
 #!/bin/bash
 
-if [[ $UID != 0 ]]; then
-  echo "To automatically remove ./backup/ folder, please run with sudo:"
-  echo "sudo $0 $*"
-  exit 1
-fi
-
-hostBackupDir="$(pwd)/backup"
+hostBackupFolderName="figOrchestrationBackup"
+hostBackupDir="$(pwd)/$hostBackupFolderName"
 
 function backup_volume(){
   docker run --rm --volumes-from "$1" -v "$hostBackupDir/${1}/${2}":/backup ubuntu tar cf /backup/backup.tar $2
@@ -24,11 +19,6 @@ for container in $(fig ps | tail -n +3 | awk '{print $1}'); do
   get_volumes "${container}"
 done
 
-tar czf backup.tar.gz backup
+tar czf backup.tar.gz "$hostBackupFolderName"
 
-if [[ $UID == 0 ]]; then
-  sudo rm -rf backup
-  if [ $1 ]; then
-    chown $1:$1 backup.tar.gz
-  fi
-fi
+docker run --rm -v "$(pwd)":"/mnt/share" ubuntu rm -rf /mnt/share/"$hostBackupFolderName"
