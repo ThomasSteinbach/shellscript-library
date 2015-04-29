@@ -1,0 +1,40 @@
+#!/bin/bash
+
+function fscan(){
+  find / -name .git -type d 2>/dev/null | sed "s/\/\.git//g" > .gm.db
+  echo "found following repositories:"
+  for dir in $(cat .gm.db); do echo "$dir"; done
+}
+
+function fstatus(){
+  for dir in $(cat .gm.db)
+    do echo -e "\n\n${dir}\n--------------------------------"
+       cd "$dir"
+       git status
+  done
+}
+
+function fpull(){
+  for dir in $(cat .gm.db)
+    do echo -e "\n\n${dir}\n--------------------------------"
+       cd "$dir"
+       git pull
+  done
+} 
+
+function print_help(){
+  echo "call gm with following options:"
+  echo "  gm scan	- (re)scans all repositorys on the computer"
+  echo "  gm status	- shows the status of all repositories in the database"
+  echo "  gm pull	- pulls all repositories in the database"
+}
+
+if [[ $1 = 'scan' ]]
+  then fscan
+elif [[ $1 = 'status' ]]
+  then fstatus
+elif [[ $1 = 'pull' ]]
+  then fpull 
+else
+  print_help
+fi
