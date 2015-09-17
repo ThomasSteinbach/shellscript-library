@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function fscan(){
-  find / -name .git -type d 2>/dev/null | sed "s/\/\.git//g" | sort > .gm.db
+  find / -name .git -type d -not -path '*/\.[^g]*' 2>/dev/null | sed "s/\/\.git//g" | sort > .gm.db
   echo "found following repositories:"
   for dir in $(cat .gm.db); do echo "$dir"; done
 }
@@ -20,7 +20,7 @@ function fpull(){
        cd "$dir"
        git pull
   done
-} 
+}
 
 function print_help(){
   echo "call gm with following options:"
@@ -34,7 +34,7 @@ if [[ $1 = 'scan' ]]
 elif [[ $1 = 'status' ]]
   then fstatus
 elif [[ $1 = 'pull' ]]
-  then fpull 
+  then fpull
 else
   print_help
 fi
