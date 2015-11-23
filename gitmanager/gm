@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function fscan(){
-  find / -name .git -type d -not -path '*/\.[^g]*' 2>/dev/null | sed "s/\/\.git//g" | sort > .gm.db
+  find / -name .git -type d -not \( -path '*/\.[^g]*' -prune \) -not \( -path '/home/thomass/ansible*' -prune \) 2>/dev/null | sed "s/\/\.git//g" | sort > .gm.db
   echo "found following repositories:"
   for dir in $(cat .gm.db); do echo "$dir"; done
 }
