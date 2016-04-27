@@ -3,23 +3,25 @@
 function fscan(){
   find / -name .git -type d -not \( -path '*/\.[^g]*' -prune \) -not \( -path '/home/thomass/ansible*' -prune \) 2>/dev/null | sed "s/\/\.git//g" | sort > .gm.db
   echo "found following repositories:"
-  for dir in $(cat .gm.db); do echo "$dir"; done
+  while read -r line; do
+    echo "$line"
+  done < .gm.db
 }
 
 function fstatus(){
-  for dir in $(cat .gm.db)
-    do echo -e "\n\n${dir}\n--------------------------------"
-       cd "$dir"
-       git status
-  done
+  while read -r dir; do
+    echo -e "\n\n${dir}\n--------------------------------"
+    cd "$dir"
+    git status
+  done < .gm.db
 }
 
 function fpull(){
-  for dir in $(cat .gm.db)
-    do echo -e "\n\n${dir}\n--------------------------------"
-       cd "$dir"
-       git pull
-  done
+  while read -r dir; do
+    echo -e "\n\n${dir}\n--------------------------------"
+    cd "$dir"
+    git pull
+  done < .gm.db
 }
 
 function print_help(){
