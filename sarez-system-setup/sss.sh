@@ -17,7 +17,11 @@ function extract(){
 }
 
 function apply(){
- echo "apply"
+  extract
+
+  apply-wifi
+
+  rm -rf settings
 }
 
 function show-help(){
@@ -26,6 +30,14 @@ function show-help(){
   echo ' extract - to extract the settings to the current directory for modification'
   echo ' update  - to compress the extracted and modified settings'
   echo ' apply   - to apply the compressed settings'
+}
+
+# apply functions
+
+function apply-wifi(){
+  sudo cp settings/wifi/* /etc/NetworkManager/system-connections/
+  sudo chown root:root /etc/NetworkManager/system-connections/*
+  sudo chmod 600 /etc/NetworkManager/system-connections/*
 }
 
 # start processing
