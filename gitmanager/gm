@@ -10,9 +10,12 @@ function fscan(){
 
 function fstatus(){
   while read -r dir; do
-    echo -e "\n\n${dir}\n--------------------------------"
     cd "$dir"
-    git status
+    result=$(git status | sed -n '2p')
+    if [[ $(echo $result | grep -i commits)  ]]; then
+      echo -e "\n\n${dir}\n--------------------------------"
+      echo $result
+    fi
   done < .gm.db
 }
 
