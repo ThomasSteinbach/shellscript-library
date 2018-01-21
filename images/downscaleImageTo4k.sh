@@ -20,7 +20,7 @@ function downscale {
   height=$(magick identify -format '%h' "$image" 2> /dev/null)
 
   if [ $width -le 4096 ] || [ $height -le 2160 ]; then
-    echo "Already lower than 4k - $image";
+#    echo "Already lower than 4k - $image";
     return
   fi
 
