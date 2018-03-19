@@ -12,7 +12,8 @@ function fstatus(){
   echo "Changes found in:"
   while read -r dir; do
     cd "$dir"
-    if [[ ! $(LANG=en git status | grep -i 'nothing to commit, working tree clean') ]]; then
+    if [[ ! $(LANG=en git status | grep -i 'nothing to commit, working tree clean') || \
+            $(LANG=en git status | grep -i 'Your branch is ahead of') ]]; then
       echo "${dir}"
     fi
   done < .gm.db
