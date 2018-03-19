@@ -9,15 +9,11 @@ function fscan(){
 }
 
 function fstatus(){
+  echo "Changes found in:"
   while read -r dir; do
     cd "$dir"
-
-    commits=$(LANG=en git status | sed -n '2p')
-    changes=$(LANG=en git status | sed -n '3p')
-
-    if [[ $(echo $commits | grep -i commits) ]] || [[ $(echo $changes | grep -i changes) ]]; then
-      echo -e "\n\n${dir}\n--------------------------------"
-      git status
+    if [[ ! $(LANG=en git status | grep -i 'nothing to commit, working tree clean') ]]; then
+      echo "${dir}"
     fi
   done < .gm.db
 }
