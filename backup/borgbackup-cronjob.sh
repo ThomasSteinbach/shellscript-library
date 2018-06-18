@@ -3,6 +3,7 @@
 # see http://tldp.org/HOWTO/LVM-HOWTO/snapshots_backup.html
 
 export BORG_REPO=ssh://${SSH_USER}@${SSH_REMOTE}:${SSH_PORT}/./borgbackup
+export BORG_PASSPHRASE="xxxxxx"
 RETRIES=5
 
 # some helpers and error handling:
@@ -26,7 +27,7 @@ while [[ $backup_exit -gt 0 && $RETRIES -gt 0 ]]; do
   borg create --verbose \
               --stats \
               --compression auto,zlib,6 \
-              ::"${TIMESTAMP} \
+              ::"${TIMESTAMP}" \
               /tmp/backup
 
   backup_exit=$?
@@ -40,14 +41,14 @@ borg prune                          \
     --show-rc                       \
     --keep-daily    7               \
     --keep-weekly   4               \
-    --keep-monthly  6               \
+    --keep-monthly  6
 
 prune_exit=$?
 
 umount /tmp/backup
 rmdir /tmp/backup
 
-lvremove /dev/local/openshift
+lvremove -y /dev/local/backup
 
 # use highest exit code as global exit code
 global_exit=$(( backup_exit > prune_exit ? backup_exit : prune_exit ))
